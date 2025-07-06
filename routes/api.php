@@ -26,10 +26,15 @@ Route::prefix('admin')->middleware('custom.token')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
 
 
-       // Get all users
+       //USERS
         Route::get('getAllUsers', [UserController::class, 'getAllUsers'])->name('getAllUsers');
         Route::get('getUser', [UserController::class, 'getUser'])->name('getUser');  
         Route::post('updateUser', [UserController::class, 'updateUser'])->name('updateUser');
+
+
+        //SUBCRIPTION AND SUBCRIPTION_HISTORY
+        Route::get('checkSubStatus', [AuthController::class, 'checkSubStatus'])->name('checkSubStatus');
+
     
 
 });
