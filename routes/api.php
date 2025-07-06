@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\API\AuthController;
+use App\Http\Controllers\API\JobController;
+use App\Http\Controllers\API\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -14,6 +17,20 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::post('/login', [AuthController::class, 'login']);
+Route::post('createUser', [UserController::class, 'createUser'])->name('createUser');
+
+Route::prefix('admin')->middleware('custom.token')->group(function () {
+    // All routes here will be prefixed with /admin
+    // and protected with custom.token middleware
+    Route::post('/logout', [AuthController::class, 'logout']);
+
+
+       // Get all users
+        Route::get('getAllUsers', [UserController::class, 'getAllUsers'])->name('getAllUsers');
+        Route::get('getUser', [UserController::class, 'getUser'])->name('getUser');  
+        Route::post('updateUser', [UserController::class, 'updateUser'])->name('updateUser');
+    
+
 });
+    

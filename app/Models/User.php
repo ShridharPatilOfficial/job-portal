@@ -17,10 +17,12 @@ class User extends Authenticatable
      *
      * @var array<int, string>
      */
+    use HasFactory, Notifiable;
+
     protected $fillable = [
-        'name',
-        'email',
-        'password',
+        'name', 'email', 'phone', 'password', 'gender', 'role', 'status',
+        'marital_status', 'dob', 'religion', 'address', 'aadhar_no',
+        'languages', 'api_token',
     ];
 
     /**
@@ -28,10 +30,41 @@ class User extends Authenticatable
      *
      * @var array<int, string>
      */
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
+    protected $hidden = ['password', 'remember_token', 'api_token'];
+
+    public function company() {
+        return $this->hasOne(Company::class);
+    }
+
+    public function jobApplications() {
+        return $this->hasMany(JobApplication::class);
+    }
+
+    public function subscriptions() {
+        return $this->hasMany(Subscription::class);
+    }
+
+    public function subHistories() {
+        return $this->hasMany(SubHistory::class);
+    }
+
+
+    public function userDetails()
+{
+    return $this->hasOne(\App\Models\UserDetail::class);
+}
+
+public function userExperiences()
+{
+    return $this->hasMany(\App\Models\UserExperience::class);
+}
+
+public function userEducations()
+{
+    return $this->hasMany(\App\Models\UserEducation::class);
+}
+
+
 
     /**
      * The attributes that should be cast.
