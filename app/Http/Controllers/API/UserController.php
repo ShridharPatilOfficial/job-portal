@@ -56,7 +56,6 @@ class UserController extends Controller
                 "message" => "User fetched successfully!",
                 "data" => $user
             ]);
-            
         } catch (Exception $e) {
             return response()->json([
                 "status" => false,
@@ -70,14 +69,34 @@ class UserController extends Controller
     public function createUser(Request $request)
     {
         try {
-            $user = User::create([
-                'name' => $request->name,
-                'email' => $request->email,
-                'phone' => $request->phone,
-                'password' => Hash::make($request->password),
-                'role' => $request->role,
-                'status' => $request->status ?? 0,
-            ]);
+            $userData = [];
+
+            // Handle profile file upload
+            if ($request->hasFile('profile')) {
+                $file = $request->file('profile');
+                $filename = time() . '_' . $file->getClientOriginalName();
+                $profilePath = $file->storeAs('profiles', $filename, 'public');
+                $userData['profile'] = asset('storage/' . $profilePath);
+            }
+
+            // Optional fields
+            if ($request->has('name')) $userData['name'] = $request->name;
+            if ($request->has('email')) $userData['email'] = $request->email;
+            if ($request->has('phone')) $userData['phone'] = $request->phone;
+            if ($request->has('gender')) $userData['gender'] = $request->gender;
+            if ($request->has('role')) $userData['role'] = $request->role;
+            if ($request->has('status')) $userData['status'] = $request->status;
+            if ($request->has('marital_status')) $userData['marital_status'] = $request->marital_status;
+            if ($request->has('dob')) $userData['dob'] = $request->dob;
+            if ($request->has('religion')) $userData['religion'] = $request->religion;
+            if ($request->has('address')) $userData['address'] = $request->address;
+            if ($request->has('aadhar_no')) $userData['aadhar_no'] = $request->aadhar_no;
+            if ($request->has('languages')) $userData['languages'] = $request->languages;
+
+            // Required password
+            $userData['password'] = Hash::make($request->password);
+
+            $user = User::create($userData);
 
             return response()->json([
                 "status" => true,
@@ -93,7 +112,6 @@ class UserController extends Controller
             ], 500);
         }
     }
-
     public function updateUser(Request $request)
     {
         try {
@@ -107,10 +125,31 @@ class UserController extends Controller
                 ], 404);
             }
 
-            $user->update($request->only([
-                'name', 'email', 'phone', 'gender', 'role', 'status', 'marital_status',
-                'dob', 'religion', 'address', 'aadhar_no', 'languages'
-            ]));
+            $dataToUpdate = [];
+
+            // Handle profile file update
+            if ($request->hasFile('profile')) {
+                $file = $request->file('profile');
+                $filename = time() . '_' . $file->getClientOriginalName();
+                $profilePath = $file->storeAs('profiles', $filename, 'public');
+                $dataToUpdate['profile'] = asset('storage/' . $profilePath);
+            }
+
+            // Optional fields
+            if ($request->has('name')) $dataToUpdate['name'] = $request->name;
+            if ($request->has('email')) $dataToUpdate['email'] = $request->email;
+            if ($request->has('phone')) $dataToUpdate['phone'] = $request->phone;
+            if ($request->has('gender')) $dataToUpdate['gender'] = $request->gender;
+            if ($request->has('role')) $dataToUpdate['role'] = $request->role;
+            if ($request->has('status')) $dataToUpdate['status'] = $request->status;
+            if ($request->has('marital_status')) $dataToUpdate['marital_status'] = $request->marital_status;
+            if ($request->has('dob')) $dataToUpdate['dob'] = $request->dob;
+            if ($request->has('religion')) $dataToUpdate['religion'] = $request->religion;
+            if ($request->has('address')) $dataToUpdate['address'] = $request->address;
+            if ($request->has('aadhar_no')) $dataToUpdate['aadhar_no'] = $request->aadhar_no;
+            if ($request->has('languages')) $dataToUpdate['languages'] = $request->languages;
+
+            $user->update($dataToUpdate);
 
             return response()->json([
                 "status" => true,
@@ -127,4 +166,3 @@ class UserController extends Controller
         }
     }
 }
-

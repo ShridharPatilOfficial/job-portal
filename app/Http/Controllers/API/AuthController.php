@@ -34,22 +34,18 @@ class AuthController extends Controller
 
                     $subscription_status = $endDate->lt($today) ? 0 : 1;
                     $expire_date = $endDate->toDateString();
-                     $isAdmin = 'No';
                 } else {
                     $subscription_status = 0;
-                    $expire_date = false;
-                    $isAdmin = 'No';
+                    $expire_date = $subscription->end_date;
                 }
             } else {
                 $subscription_status = false;
                 $expire_date = false;
-                $isAdmin = 'Yes';
             }
 
             return response()->json([
                 'status' => true,
-                'isAdmin'=>$isAdmin,
-                'message' => 'Subscription status fetched successfully!',
+                'message' => 'Subscription Details fetched successfully!',
                 'subscription_status' => $subscription_status,
                 'expire_date' => $expire_date,
                 'user_data'=> $user
@@ -119,4 +115,37 @@ class AuthController extends Controller
             'message' => 'Invalid credentials'
         ], 401);
     }
+
+
+
+    // auth user role 
+     public static function checkAuth(Request $request)
+    {
+        $Token = $request->header('Authorization');
+        if (!$Token) return false;
+
+        $token = str_replace('Bearer ', '', $Token);
+        $user = User::where('api_token', $token)->first();
+
+        if (!$user) return false;
+
+        if ($user->role != 2) {
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+
+     public static function responce($check)
+    {
+        if($check=='Aunthorized Access'){
+              return response()->json([
+            'status' => false,
+            'message' => 'Unauthorized Access. You are not authorized.'
+        ], 401);
+        }
+    }
+
+
 }

@@ -1,8 +1,10 @@
 <?php
 
 use App\Http\Controllers\API\AuthController;
+use App\Http\Controllers\API\CompanyController;
 use App\Http\Controllers\API\JobController;
 use App\Http\Controllers\API\UserController;
+use App\Http\Controllers\JobCategoryController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -35,6 +37,21 @@ Route::prefix('admin')->middleware('custom.token')->group(function () {
         //SUBCRIPTION AND SUBCRIPTION_HISTORY
         Route::get('checkSubStatus', [AuthController::class, 'checkSubStatus'])->name('checkSubStatus');
 
+
+    //COMPANY CRUD
+    Route::get('getAllCompanies', [CompanyController::class, 'getAllCompanies'])->name('getAllCompanies');
+    Route::get('getCompany', [CompanyController::class, 'getCompany'])->name('getCompany');
+    Route::post('createCompany', [CompanyController::class, 'createCompany'])->name('createCompany');
+    Route::post('updateCompany', [CompanyController::class, 'updateCompany'])->name('updateCompany');
+  //  Route::post('deleteCompany', [CompanyController::class, 'deleteCompany'])->name('deleteCompany');
+
+
+  //JOB CATEGORY CRUD
+      Route::get('getAllJobCategories', [JobCategoryController::class, 'getAllJobCategories'])->name('getAllJobCategories');
+    Route::get('getJobCategory', [JobCategoryController::class, 'getJobCategory'])->name('getJobCategory');
+    Route::post('createJobCategory', [JobCategoryController::class, 'createJobCategory'])->name('createJobCategory');
+    Route::post('updateJobCategory', [JobCategoryController::class, 'updateJobCategory'])->name('updateJobCategory');
+    Route::post('deleteJobCategory', [JobCategoryController::class, 'deleteJobCategory'])->name('deleteJobCategory');
     
 
 });
